@@ -1,3 +1,8 @@
+/*Marion Ivan Lim Tan*/
+
+
+
+
 /**
  * Characters Strings. 
  *  
@@ -25,7 +30,7 @@ String direc = "";
 
 Serial myPort;  // Create object from Serial class
 
-String time,distance;
+String time,dist,distance;//variable declaration
 void setup() {
   size(500, 300);
   // Create the font
@@ -35,20 +40,20 @@ void setup() {
 }
 
 void draw() {
-  
-  if ( myPort.available() > 13) {  // If data is available,
-   background(255); // Set background to black
-   if(myPort.read() == 0xaa){//for error checking
-       printDir("time(us) || distance(mm) ",130,130); 
-       time = myPort.readString();
-       printDir(time,180,160);
-   }  
-   printDir(time,180,160);
-   myPort.clear();             //clear the serial port     
+  if(myPort.available() > 10){
+    background(255); 
+     if(myPort.read() == 0xaa){//fixes the data sent
+        time = myPort.readString();
+        printDir(time,250,130);
+        printDir("time(us):",70,130);
+        printDir("distance(mm):",70,168);
+     }
+        printDir(time,250,130);
+        printDir("time(us):",70,130);
+        printDir("distance(mm):",70,168);
   }
-  
-}
-
+  myPort.clear(); //clear the serial port   
+ }
 void printDir(String dir, int x ,int y){
   println(dir);
   textSize(24);
@@ -93,12 +98,12 @@ void loop() {
   time = pulseIn(RX, 1, timeOut);
   distance = (time/2000.0)*334.0;
   
-  timeS = String(time/2) + " || ";
+  timeS = String(time/2);
   distanceS = String(distance);   
   if (time>0){
-    
     Serial.write(0xaa);
-    Serial.println(timeS + distanceS);
+    Serial.println(timeS);
+    Serial.println(distanceS);
   }
-delay(100);
+//delay(10);
 }*/
