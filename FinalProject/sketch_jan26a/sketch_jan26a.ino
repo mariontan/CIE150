@@ -10,7 +10,7 @@ int endSec = 0;
 
 int hrIntrvl = 0;
 int mntIntrvl = 0;
-int secIntrvl = 5;
+int secIntrvl = 10;
 
 boolean timerStp = false;
 
@@ -71,6 +71,12 @@ void loop () {
       //bug if time goes beyond 60s timer malfunctions, need a reset
       if((endHour-startHour>=hrIntrvl)&&(endMinute-startMinute>=mntIntrvl)&&(endSec - startSec>=secIntrvl)){
         timerStp = true;
+      }
+      //reset the start starttime
+      if(endHour==24||endMinute==60||endSec == 60){
+        startHour = now.hour();
+        startMinute = now.minute();
+        startSec = now.second();
       }
       delay(1000);
     }
