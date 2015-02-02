@@ -73,7 +73,8 @@ void loop () {
         timerStp = true;
       }
       //reset the start starttime
-      if(endHour==24||endMinute==60||endSec == 60){
+      if(endHour==24||endMinute==59||endSec == 59){
+        Serial.println("reset");
         startHour = now.hour();
         startMinute = now.minute();
         startSec = now.second();
