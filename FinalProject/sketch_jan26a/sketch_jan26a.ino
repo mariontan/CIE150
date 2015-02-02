@@ -14,6 +14,7 @@ int secIntrvl = 10;
 
 boolean timerStp = false;
 
+int relayPin = 13;
 RTC_DS1307 RTC;
  
 void setup () {
@@ -21,12 +22,16 @@ void setup () {
     Wire.begin();
     RTC.begin();
  
-  if (! RTC.isrunning()) {
-    Serial.println("RTC is NOT running!");
-    // following line sets the RTC to the date & time this sketch was compiled
-    // uncomment it & upload to set the time, date and start run the RTC!
-    //RTC.adjust(DateTime(__DATE__, __TIME__));
-  }
+    if (! RTC.isrunning()) {
+      Serial.println("RTC is NOT running!");
+      // following line sets the RTC to the date & time this sketch was compiled
+      // uncomment it & upload to set the time, date and start run the RTC!
+      //RTC.adjust(DateTime(__DATE__, __TIME__));
+    }
+    
+    /*
+    pinmode(relayPin,OUTPUT);
+    */
  
 }
  
@@ -53,6 +58,12 @@ void loop () {
     delay(1000);
     timerStp = false;
     
+    /*for moisture sensor
+    if(soil is dry){
+      turnRelayON();
+    }
+    */
+    //timer function
     while(timerStp == false){
       /***Do something here regarding the timer***/
       //needed so that now.second can get the second right now
@@ -73,7 +84,7 @@ void loop () {
         timerStp = true;
       }
       //reset the start starttime
-      if(endHour==24||endMinute==59||endSec == 59){
+      if(endHour == 24||endMinute == 59||endSec == 59){
         Serial.println("reset");
         startHour = now.hour();
         startMinute = now.minute();
@@ -81,9 +92,21 @@ void loop () {
       }
       delay(1000);
     }
-    
+    //turnRelayON();
 }
-/**************Unused Code******************/
+
+/*
+void turnRelayON(){
+  digitalWrite(relayPin,HIGH);//turn on relay 
+  delay(10000);//delay 10 seconds
+  digitalWrite(relayPin, LOW);
+}
+*/
+
+
+
+
+/**************Unused Code save for future use******************/
 //while((startHour-endHour<=hrIntrvl)&&(startMinute-endMinute<=mntIntrvl)&&(startSec-endSec<=secIntrvl)==false){
  /* 
  //getting unix time
