@@ -2,21 +2,35 @@
 #include "RTClib.h"
 
 int startHour = 0;
-int endHour = 0;
+int curHour = 0;
 int startMinute = 0;
-int endMinute = 0;
+int curMinute = 0;
 int startSec = 0;
-int endSec = 0;
+int curSec = 0;
 
-int hrIntrvl = 0;
-int mntIntrvl = 0;
-int secIntrvl = 10;
+
 
 boolean timerStp = false;
 
 int relayPin = 13;
 RTC_DS1307 RTC;
- 
+
+const int row = 2;
+const int column = 2;
+//{{hours, minutes}} put here times of day when to water plants
+int waterTime[row][column] = {{14,23},{14,24}};
+/*
+void turnRelayON(){
+  digitalWrite(relayPin,HIGH);//turn on relay 
+  delay(10000);//delay 10 seconds
+  digitalWrite(relayPin, LOW);
+}
+//for moisture sensor
+void moistCheck(){
+  turnRealyON();
+}
+*/
+
 void setup () {
     Serial.begin(57600);
     Wire.begin();
@@ -58,29 +72,54 @@ void loop () {
     delay(1000);
     timerStp = false;
     
-    /*for moisture sensor
-    if(soil is dry){
-      turnRelayON();
-    }
+    /*
+    moistCheck();
     */
     //timer function
     while(timerStp == false){
       /***Do something here regarding the timer***/
       //needed so that now.second can get the second right now
       DateTime now = RTC.now();
-      endHour = now.hour();
-      endMinute = now.minute();
-      endSec = now.second();
-      
-      Serial.println("endhour");
-      Serial.print(endHour, DEC);
+      curHour = now.hour();
+      curMinute = now.minute();
+      curSec = now.second();
+      //print statements to be used later for serial commnication
+      //Serial.println("endhour");
+      Serial.print(curHour, DEC);
       Serial.print(':');
-      Serial.print(endMinute, DEC);
+      Serial.print(curMinute, DEC);
       Serial.print(':');
-      Serial.print(endSec, DEC);
+      Serial.print(curSec, DEC);
       Serial.println();
-      //bug if time goes beyond 60s timer malfunctions, need a reset
-      if((endHour-startHour>=hrIntrvl)&&(endMinute-startMinute>=mntIntrvl)&&(endSec - startSec>=secIntrvl)){
+      //comapres if curHour and curMinute are equal then activate relay place times of day to water a plant
+      for(int i = 0; i<row; i++){
+        if((waterTime[i][0]==curHour)&&(waterTime[i][1]==curMinute)){
+          //activate relay
+          //turnRelayON();
+          Serial.print("Hello");
+        }
+      }
+      //moistCheck():
+      delay(1000);
+    }
+    //turnRelayON();
+}
+
+
+
+
+
+
+/**************Unused Code save for future use******************/
+//while((startHour-endHour<=hrIntrvl)&&(startMinute-endMinute<=mntIntrvl)&&(startSec-endSec<=secIntrvl)==false){
+ /* 
+ 
+ //bug if time goes beyond 60s timer malfunctions, need a reset
+ int hrIntrvl = 0;
+int mntIntrvl = 0;
+int secIntrvl = 0;
+      if((endHour-startHour>=hrIntrvl)||(endMinute-startMinute>=mntIntrvl)||(endSec - startSec>=secIntrvl)){
+       //if(endSec - startSec>=secIntrvl){
         timerStp = true;
       }
       //reset the start starttime
@@ -90,25 +129,6 @@ void loop () {
         startMinute = now.minute();
         startSec = now.second();
       }
-      delay(1000);
-    }
-    //turnRelayON();
-}
-
-/*
-void turnRelayON(){
-  digitalWrite(relayPin,HIGH);//turn on relay 
-  delay(10000);//delay 10 seconds
-  digitalWrite(relayPin, LOW);
-}
-*/
-
-
-
-
-/**************Unused Code save for future use******************/
-//while((startHour-endHour<=hrIntrvl)&&(startMinute-endMinute<=mntIntrvl)&&(startSec-endSec<=secIntrvl)==false){
- /* 
  //getting unix time
  Serial.print(" since 1970 = ");
     Serial.print(now.unixtime());
