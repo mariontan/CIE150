@@ -1,14 +1,9 @@
 #include <Wire.h>
 #include "RTClib.h"
 
-int startHour = 0;
 int curHour = 0;
-int startMinute = 0;
 int curMinute = 0;
-int startSec = 0;
 int curSec = 0;
-
-
 
 boolean timerStp = false;
 
@@ -18,13 +13,14 @@ RTC_DS1307 RTC;
 const int row = 2;
 const int column = 2;
 //{{hours, minutes}} put here times of day when to water plants
-int waterTime[row][column] = {{14,23},{14,24}};
-/*
+int waterTime[row][column] = {{16,6},{14,24}};
+
 void turnRelayON(){
   digitalWrite(relayPin,HIGH);//turn on relay 
-  delay(10000);//delay 10 seconds
+  delay(1000);//delay 10 seconds
   digitalWrite(relayPin, LOW);
 }
+/*
 //for moisture sensor
 void moistCheck(){
   turnRealyON();
@@ -42,10 +38,9 @@ void setup () {
       // uncomment it & upload to set the time, date and start run the RTC!
       //RTC.adjust(DateTime(__DATE__, __TIME__));
     }
-    
-    /*
-    pinmode(relayPin,OUTPUT);
-    */
+        
+    pinMode(relayPin,OUTPUT);
+    digitalWrite(relayPin,LOW);
  
 }
  
@@ -60,16 +55,7 @@ void loop () {
     Serial.print(' ');
     Serial.println();
     
-    startHour = now.hour();
-    startMinute = now.minute();
-    startSec = now.second();
-    Serial.print(startHour, DEC);
-    Serial.print(':');
-    Serial.print(startMinute, DEC);
-    Serial.print(':');
-    Serial.print(startSec, DEC);
-    Serial.println();
-    delay(1000);
+   
     timerStp = false;
     
     /*
@@ -95,7 +81,7 @@ void loop () {
       for(int i = 0; i<row; i++){
         if((waterTime[i][0]==curHour)&&(waterTime[i][1]==curMinute)){
           //activate relay
-          //turnRelayON();
+          turnRelayON();
           Serial.print("Hello");
         }
       }
@@ -115,9 +101,20 @@ void loop () {
  /* 
  
  //bug if time goes beyond 60s timer malfunctions, need a reset
- int hrIntrvl = 0;
-int mntIntrvl = 0;
-int secIntrvl = 0;
+    int hrIntrvl = 0;
+    int mntIntrvl = 0;
+    int secIntrvl = 0;
+
+    startHour = now.hour();
+    startMinute = now.minute();
+    startSec = now.second();
+    Serial.print(startHour, DEC);
+    Serial.print(':');
+    Serial.print(startMinute, DEC);
+    Serial.print(':');
+    Serial.print(startSec, DEC);
+    Serial.println();
+    delay(1000);
       if((endHour-startHour>=hrIntrvl)||(endMinute-startMinute>=mntIntrvl)||(endSec - startSec>=secIntrvl)){
        //if(endSec - startSec>=secIntrvl){
         timerStp = true;
