@@ -10,29 +10,25 @@ int curHour = 0;
 int curMinute = 0;
 int curSec = 0;
 
-
-
 int relayPin = 13;
 RTC_DS1307 RTC;
-DateTime now = RTC.now();
+
 const int row = 2;
 const int column = 2;
 //{{hours, minutes}} put here times of day when to water plants
 int waterTime[row][column] = {{16,6},{14,24}};
 
-void printDate(){
-  Serial.print(now.year(),DEC);
-  Serial.print('/');
-  Serial.print(now.month(),DEC);
-  Serial.print('/');
-  Serial.print(now.day(),DEC);
-  Serial.print(' ');
-  Serial.println();
-}
-
-void timerRELAY(){
-  /*****timer function*****/
-       
+void timerCtrl(){
+   DateTime now = RTC.now(); 
+   
+    Serial.print(now.year(),DEC);
+    Serial.print('/');
+    Serial.print(now.month(),DEC);
+    Serial.print('/');
+    Serial.print(now.day(),DEC);
+    Serial.print(' ');
+    Serial.println();
+   
     curHour = now.hour();
     curMinute = now.minute();
     curSec = now.second();
@@ -47,6 +43,7 @@ void timerRELAY(){
     //comapres if curHour and curMinute are equal then activate relay place times of day to water a plant
     for(int i = 0; i<row; i++){
       if((waterTime[i][0]==curHour)&&(waterTime[i][1]==curMinute)){
+        //activate relay
         turnRelayON();
         Serial.print("Hello");
       }
@@ -76,19 +73,18 @@ void setup () {
       // uncomment it & upload to set the time, date and start run the RTC!
       //RTC.adjust(DateTime(__DATE__, __TIME__));
     }
+        
     pinMode(relayPin,OUTPUT);
     digitalWrite(relayPin,LOW);
  
 }
  
 void loop () {
-    printDate();
     
-    timerRELAY();
-   
-    delay(1000);
+   timerCtrl();
     
-    //turnRelayON();
+   delay(1000);
+    
 }
 
 
