@@ -1,3 +1,8 @@
+/*
+RTC shield connections 
+SDA to a4; SCL a5
+*/
+
 #include <Wire.h>
 #include "RTClib.h"
 
@@ -5,15 +10,48 @@ int curHour = 0;
 int curMinute = 0;
 int curSec = 0;
 
-boolean timerStp = false;
+
 
 int relayPin = 13;
 RTC_DS1307 RTC;
-
+DateTime now = RTC.now();
 const int row = 2;
 const int column = 2;
 //{{hours, minutes}} put here times of day when to water plants
 int waterTime[row][column] = {{16,6},{14,24}};
+
+void printDate(){
+  Serial.print(now.year(),DEC);
+  Serial.print('/');
+  Serial.print(now.month(),DEC);
+  Serial.print('/');
+  Serial.print(now.day(),DEC);
+  Serial.print(' ');
+  Serial.println();
+}
+
+void timerRELAY(){
+  /*****timer function*****/
+       
+    curHour = now.hour();
+    curMinute = now.minute();
+    curSec = now.second();
+    //print statements to be used later for serial commnication
+    
+    Serial.print(curHour, DEC);
+    Serial.print(':');
+    Serial.print(curMinute, DEC);
+    Serial.print(':');
+    Serial.print(curSec, DEC);
+    Serial.println();
+    //comapres if curHour and curMinute are equal then activate relay place times of day to water a plant
+    for(int i = 0; i<row; i++){
+      if((waterTime[i][0]==curHour)&&(waterTime[i][1]==curMinute)){
+        turnRelayON();
+        Serial.print("Hello");
+      }
+    }
+}
 
 void turnRelayON(){
   digitalWrite(relayPin,HIGH);//turn on relay 
@@ -28,7 +66,7 @@ void moistCheck(){
 */
 
 void setup () {
-    Serial.begin(57600);
+    Serial.begin(9600);
     Wire.begin();
     RTC.begin();
  
@@ -38,56 +76,18 @@ void setup () {
       // uncomment it & upload to set the time, date and start run the RTC!
       //RTC.adjust(DateTime(__DATE__, __TIME__));
     }
-        
     pinMode(relayPin,OUTPUT);
     digitalWrite(relayPin,LOW);
  
 }
  
 void loop () {
-    DateTime now = RTC.now();
-        
-    Serial.print(now.year(),DEC);
-    Serial.print('/');
-    Serial.print(now.month(),DEC);
-    Serial.print('/');
-    Serial.print(now.day(),DEC);
-    Serial.print(' ');
-    Serial.println();
+    printDate();
     
+    timerRELAY();
    
-    timerStp = false;
+    delay(1000);
     
-    /*
-    moistCheck();
-    */
-    //timer function
-    while(timerStp == false){
-      /***Do something here regarding the timer***/
-      //needed so that now.second can get the second right now
-      DateTime now = RTC.now();
-      curHour = now.hour();
-      curMinute = now.minute();
-      curSec = now.second();
-      //print statements to be used later for serial commnication
-      //Serial.println("endhour");
-      Serial.print(curHour, DEC);
-      Serial.print(':');
-      Serial.print(curMinute, DEC);
-      Serial.print(':');
-      Serial.print(curSec, DEC);
-      Serial.println();
-      //comapres if curHour and curMinute are equal then activate relay place times of day to water a plant
-      for(int i = 0; i<row; i++){
-        if((waterTime[i][0]==curHour)&&(waterTime[i][1]==curMinute)){
-          //activate relay
-          turnRelayON();
-          Serial.print("Hello");
-        }
-      }
-      //moistCheck():
-      delay(1000);
-    }
     //turnRelayON();
 }
 
