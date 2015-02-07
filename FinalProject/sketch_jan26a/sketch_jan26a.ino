@@ -6,10 +6,6 @@ SDA to a4; SCL a5
 #include <Wire.h>
 #include "RTClib.h"
 
-int curHour = 0;
-int curMinute = 0;
-int curSec = 0;
-
 int relayPin = 13;
 RTC_DS1307 RTC;
 
@@ -19,7 +15,7 @@ const int column = 2;
 int waterTime[row][column] = {{16,6},{14,24}};
 
 void timerCtrl(){
-   DateTime now = RTC.now(); 
+    DateTime now = RTC.now(); 
    
     Serial.print(now.year(),DEC);
     Serial.print('/');
@@ -29,21 +25,17 @@ void timerCtrl(){
     Serial.print(' ');
     Serial.println();
    
-    curHour = now.hour();
-    curMinute = now.minute();
-    curSec = now.second();
-    //print statements to be used later for serial commnication
+    //print statements to be used later for serial commnication, maybe OK to remove DEC
     
-    Serial.print(curHour, DEC);
+    Serial.print(now.hour(), DEC);
     Serial.print(':');
-    Serial.print(curMinute, DEC);
+    Serial.print(now.minute(), DEC);
     Serial.print(':');
-    Serial.print(curSec, DEC);
+    Serial.print(now.second(), DEC);
     Serial.println();
     //comapres if curHour and curMinute are equal then activate relay place times of day to water a plant
     for(int i = 0; i<row; i++){
-      if((waterTime[i][0]==curHour)&&(waterTime[i][1]==curMinute)){
-        //activate relay
+      if((waterTime[i][0]==now.hour())&&(waterTime[i][1]==now.minute())){
         turnRelayON();
         Serial.print("Hello");
       }
@@ -80,7 +72,7 @@ void setup () {
 }
  
 void loop () {
-    
+   //add temp sensor  
    timerCtrl();
     
    delay(1000);
