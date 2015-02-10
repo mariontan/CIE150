@@ -6,7 +6,17 @@ SDA to a4; SCL a5
 #include <Wire.h>
 #include "RTClib.h"
 
+String Month;
+String Date;
+String Year;
+
+String Hour;
+String Minute;
+String Second;
+
 int relayPin = 13;
+
+int mode = 0;   // for incoming serial data
 RTC_DS1307 RTC;
 
 const int row = 2;
@@ -14,25 +24,31 @@ const int column = 2;
 //{{hours, minutes}} put here times of day when to water plants
 int waterTime[row][column] = {{16,6},{14,24}};
 
+void checkSerial(){
+  if (Serial.available() > 0) {
+                // read the incoming byte:
+        mode = Serial.parseInt();
+       // say what you got:
+        Serial.print("I received: ");
+        Serial.println(mode);
+   }
+}
+
 void timerCtrl(){
     DateTime now = RTC.now(); 
    
-    Serial.print(now.year(),DEC);
-    Serial.print('/');
-    Serial.print(now.month(),DEC);
-    Serial.print('/');
-    Serial.print(now.day(),DEC);
-    Serial.print(' ');
-    Serial.println();
-   
-    //print statements to be used later for serial commnication, maybe OK to remove DEC
+    Year = String(now.year());
+    Month = String(now.month());
+    Date = String(now.day());
     
-    Serial.print(now.hour(), DEC);
-    Serial.print(':');
-    Serial.print(now.minute(), DEC);
-    Serial.print(':');
-    Serial.print(now.second(), DEC);
-    Serial.println();
+    Hour = String(now.hour());
+    Minute = String(now.minute());
+    Second = String(now.second());
+    
+    Serial.println(Year+'/'+Month+'/'+Date);
+    Serial.println(Hour+':'+Minute+':'+Second);
+    Serial.print(' ');
+       
     //comapres if curHour and curMinute are equal then activate relay place times of day to water a plant
     for(int i = 0; i<row; i++){
       if((waterTime[i][0]==now.hour())&&(waterTime[i][1]==now.minute())){
@@ -40,6 +56,7 @@ void timerCtrl(){
         Serial.print("Hello");
       }
     }
+    
 }
 
 void turnRelayON(){
@@ -72,9 +89,14 @@ void setup () {
 }
  
 void loop () {
-   //add temp sensor  
-   timerCtrl();
-    
+   //checkSerial();
+   //if(mode == 1){
+     timerCtrl();
+   //}
+   /*else if(mode == 3){
+     Serial.println("Hello world");
+     delay(1000);
+   }*/ 
    delay(1000);
     
 }
