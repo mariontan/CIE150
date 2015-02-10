@@ -36,7 +36,7 @@ void checkSerial(){
 
 void timerCtrl(){
     DateTime now = RTC.now(); 
-   
+    //Converted to String for ease in transmission 
     Year = String(now.year());
     Month = String(now.month());
     Date = String(now.day());
@@ -47,6 +47,7 @@ void timerCtrl(){
     
     Serial.println(Year+'/'+Month+'/'+Date);
     Serial.println(Hour+':'+Minute+':'+Second);
+    //processing stops reading when it sees a space
     Serial.print(' ');
        
     //comapres if curHour and curMinute are equal then activate relay place times of day to water a plant
