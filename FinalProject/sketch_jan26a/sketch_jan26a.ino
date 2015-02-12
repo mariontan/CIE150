@@ -26,7 +26,7 @@ int waterTime[row][column] = {{16,6},{14,24}};
 
 void checkSerial(){
   if (Serial.available() > 0) {
-                // read the incoming byte:
+       // read the incoming byte:
         mode = Serial.parseInt();
        // say what you got:
         Serial.print("I received: ");
@@ -61,9 +61,9 @@ void timerCtrl(){
 }
 
 void turnRelayON(){
-  digitalWrite(relayPin,HIGH);//turn on relay 
-  delay(1000);//delay 10 seconds
-  digitalWrite(relayPin, LOW);
+    digitalWrite(relayPin,HIGH);//turn on relay 
+    delay(1000);//delay 10 seconds
+    digitalWrite(relayPin, LOW);
 }
 /*
 //for moisture sensor
@@ -90,14 +90,14 @@ void setup () {
 }
  
 void loop () {
-   //checkSerial();
-   //if(mode == 1){
+   checkSerial();
+   if(mode == 1){
      timerCtrl();
-   //}
-   /*else if(mode == 3){
+   }
+   else if(mode == 3){
      Serial.println("Hello world");
      delay(1000);
-   }*/ 
+   } 
    delay(1000);
     
 }
