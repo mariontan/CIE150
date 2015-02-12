@@ -13,8 +13,11 @@ String val;      // Data received from the serial port
 
 void setup() 
 {
-  size(200, 200);
-  myPort = new Serial(this, "COM14", 9600);
+  size(640, 360);
+  // Create the font
+  textFont(createFont("Georgia", 36));
+  myPort = new Serial(this, "COM5", 9600);
+  
 }
 
 void draw()
@@ -22,9 +25,25 @@ void draw()
   if ( myPort.available() > 0) {  // If data is available,
     val = myPort.readStringUntil(' ');         // read it and store it in val
   }
-  myPort.write('H');
-  println(val);
-  
+  myPort.write('L');//sends the serial data to the arduino
+  //catches the null 
+  if(val == null){
+     println("hi");
+  }
+  else{
+    printTime();
+  }
   delay(1000);
 }
-
+void printTime(){
+  println(val);
+  textSize(24);
+  clear();
+  text(val,100,100);
+  fill(0,0,255);
+}
+/******to send int from processing to arduino**********/
+/*
+convert int to string in processing
+then parse string back to int 
+*/
