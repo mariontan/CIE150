@@ -16,7 +16,7 @@ String Second;
 
 int relayPin = 13;
 
-int mode = 0;   // for incoming serial data
+char mode;   // for incoming serial data
 RTC_DS1307 RTC;
 
 const int row = 2;
@@ -27,10 +27,10 @@ int waterTime[row][column] = {{16,6},{14,24}};
 void checkSerial(){
   if (Serial.available() > 0) {
        // read the incoming byte:
-        mode = Serial.parseInt();
+        mode = Serial.read();
        // say what you got:
-        Serial.print("I received: ");
-        Serial.println(mode);
+        //Serial.print("I received: ");
+        //Serial.println(mode);
    }
 }
 
@@ -91,16 +91,17 @@ void setup () {
  
 void loop () {
    checkSerial();
-   if(mode == 1){
+   if(mode == 'L'){
      timerCtrl();
    }
-   else if(mode == 3){
+   else if(mode == 'H'){
      Serial.println("Hello world");
      delay(1000);
    } 
    delay(1000);
     
 }
+
 
 
 

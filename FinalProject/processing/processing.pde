@@ -11,9 +11,12 @@ import processing.serial.*;
 Serial myPort;  // Create object from Serial class
 String val;      // Data received from the serial port
 
+static int SCREEN_HEIGHT = 640;
+static int SCREEN_WIDTH = 360;
+
 void setup() 
 {
-  size(640, 360);
+  size(SCREEN_HEIGHT, SCREEN_WIDTH);
   // Create the font
   textFont(createFont("Georgia", 36));
   myPort = new Serial(this, "COM5", 9600);
@@ -28,7 +31,7 @@ void draw()
   myPort.write('L');//sends the serial data to the arduino
   //catches the null 
   if(val == null){
-     println("hi");
+     println("wait until null disappears");
   }
   else{
     printTime();
@@ -39,7 +42,7 @@ void printTime(){
   println(val);
   textSize(24);
   clear();
-  text(val,100,100);
+  text(val,SCREEN_HEIGHT/2,SCREEN_WIDTH/2);
   fill(0,0,255);
 }
 /******to send int from processing to arduino**********/
