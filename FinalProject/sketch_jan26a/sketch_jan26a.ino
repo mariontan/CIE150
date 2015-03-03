@@ -3,8 +3,8 @@ RTC shield connections
 SDA to a4; SCL a5
 */
 
-#include <Wire.h>
-#include "RTClib.h"
+#include <Wire.h> //For RTC Shield
+#include "RTClib.h" /
 
 String Month;
 String Date;
@@ -50,14 +50,13 @@ void timerCtrl(){
     //processing stops reading when it sees a space
     Serial.print(' ');
        
-    //comapres if curHour and curMinute are equal then activate relay place times of day to water a plant
+    //compares if curHour and curMinute are equal then activate relay place times of day to water a plant
     for(int i = 0; i<row; i++){
       if((waterTime[i][0]==now.hour())&&(waterTime[i][1]==now.minute())){
         turnRelayON();
-        Serial.print("Hello");
+        Serial.print("Relay turned on.");
       }
     }
-    
 }
 
 void turnRelayON(){
@@ -91,11 +90,12 @@ void setup () {
  
 void loop () {
    checkSerial();
-   if(mode == 'L'){
+   if(mode == 'T'){
+     Serial.println("Timer Mode");
      timerCtrl();
    }
-   else if(mode == 'H'){
-     Serial.println("Hello world");
+   else if(mode == 'M'){
+     Serial.println("Moisture Mode ");
      delay(1000);
    } 
    delay(1000);

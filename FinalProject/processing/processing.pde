@@ -19,7 +19,7 @@ void setup()
   size(SCREEN_HEIGHT, SCREEN_WIDTH);
   // Create the font
   textFont(createFont("Georgia", 36));
-  myPort = new Serial(this, "COM5", 9600);
+  myPort = new Serial(this, "COM4", 9600);
   
 }
 
@@ -28,7 +28,7 @@ void draw()
   if ( myPort.available() > 0) {  // If data is available,
     val = myPort.readStringUntil(' ');         // read it and store it in val
   }
-  myPort.write('L');//sends the serial data to the arduino
+  myPort.write('T');//sends the serial data to the arduino
   //catches the null 
   if(val == null){
      println("wait until null disappears");
