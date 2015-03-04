@@ -30,7 +30,7 @@ void draw()
   if ( myPort.available() > 0) {  // If data is available,
     val = myPort.readStringUntil('\t');         // read it and store it in val
   }
- //there is a 10s delay between mode switches 
+ //there is some delay between mode switches 
   mode = key;
   myPort.write(key);//sends the serial data to the arduino
   //catches the null 
