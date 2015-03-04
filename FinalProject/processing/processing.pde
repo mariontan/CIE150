@@ -10,6 +10,8 @@ import processing.serial.*;
 
 Serial myPort;  // Create object from Serial class
 String val;      // Data received from the serial port
+char pressed;
+char mode = 'T' ;
 
 static int SCREEN_HEIGHT = 640;
 static int SCREEN_WIDTH = 360;
@@ -19,16 +21,18 @@ void setup()
   size(SCREEN_HEIGHT, SCREEN_WIDTH);
   // Create the font
   textFont(createFont("Georgia", 36));
-  myPort = new Serial(this, "COM4", 9600);
+  myPort = new Serial(this, "COM5", 9600);
   
 }
 
 void draw()
 {
   if ( myPort.available() > 0) {  // If data is available,
-    val = myPort.readStringUntil(' ');         // read it and store it in val
+    val = myPort.readStringUntil('\t');         // read it and store it in val
   }
-  myPort.write('T');//sends the serial data to the arduino
+ //there is a 10s delay between mode switches 
+  mode = key;
+  myPort.write(key);//sends the serial data to the arduino
   //catches the null 
   if(val == null){
      println("wait until null disappears");
@@ -37,12 +41,17 @@ void draw()
     printTime();
   }
   delay(1000);
+  
 }
+
+void keyReleased(){
+}
+
 void printTime(){
   println(val);
   textSize(24);
   clear();
-  text(val,SCREEN_HEIGHT/2,SCREEN_WIDTH/2);
+  text(val,100,50);
   fill(0,0,255);
 }
 /******to send int from processing to arduino**********/
