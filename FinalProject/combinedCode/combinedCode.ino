@@ -51,17 +51,20 @@ void checkSerial(){
   if(Serial.available()>0){
     mode = Serial.read();
   }
+  else{
+    mode = 't';
+  }
 }
 void checkSwitch(){
   if(digitalRead(switchTimerPin) == HIGH && digitalRead(switchMoisturePin) == LOW){
-    mode = 'T';
+    mode = 't';
   }
   else if(digitalRead(switchTimerPin) == LOW && digitalRead(switchMoisturePin) == HIGH){
-    mode = 'M';
+    mode = 'm';
   }
   else{
     Serial.println("Toggle switch correctly");
-    mode = 'N';
+    mode = 'n';
   }
 }
 
@@ -113,7 +116,7 @@ void displayTempAndHum(){
   int chk = DHT.read(DHT11_PIN);
   Serial.print("Temperature: ");
   Serial.print(DHT.temperature,1);
-  Serial.print(" deg celcius \t Humidity: ");
+  Serial.print(" deg celcius ; Humidity: ");
   Serial.print(DHT.humidity,1);
   Serial.println("%");
 }
@@ -129,10 +132,12 @@ void setup(){
   pinMode(relayPin,OUTPUT);
   pinMode(switchTimerPin,INPUT);
   pinMode(switchMoisturePin,INPUT);
+  pinMode(13,OUTPUT);
   
   digitalWrite(relayPin,LOW);
   digitalWrite(switchTimerPin,LOW);
   digitalWrite(switchMoisturePin,LOW);
+  digitalWrite(13,LOW);
 }
  
 void loop(){
@@ -141,23 +146,27 @@ void loop(){
     checkSwitch = input through the arduino for stand-alone processes
   */
   displayTempAndHum();
-  checkSerial();
-  //checkSwitch();
-  if(mode == 'T'){
+  //checkSerial();
+  checkSwitch();
+  if(mode == 't'){
     Serial.println("Timer Selected");
     timerCtrl();
+    digitalWrite(13,HIGH);
+    delay(1000);
+    digitalWrite(13,LOW);
     Serial.println("Watering times");
          Serial.println(waterTime[0][0]);
          Serial.println(waterTime[0][1]);
          Serial.println(waterTime[1][0]);
          Serial.println(waterTime[1][1]);
     Serial.println("-------------------------------");
+    Serial.print("\t");
    }
   
-  else if(mode == 'C'){
+  else if(mode == 'c'){
     Serial.println("Modify values");
     Serial.print(waterTime[0][0]);
-     while(mode =='C')
+     while(mode =='c')
      {
          Serial.println("Please Input");
          delay(5000);
@@ -179,12 +188,12 @@ void loop(){
          Serial.println(waterTime[0][1]);
          Serial.println(waterTime[1][0]);
          Serial.println(waterTime[1][1]);
-         mode = 'T';
+         mode = 't';
          
      }
    }
   
-  else if(mode == 'M'){
+  else if(mode == 'm'){
     Serial.println("Moisture Selected");
     moistCtrl();
     Serial.println("-------------------------------");
