@@ -31,8 +31,8 @@ void draw()
     val = myPort.readStringUntil('\t');         // read it and store it in val
   }
  //there is some delay between mode switches 
-  //mode = key;
-  //myPort.write(key);//sends the serial data to the arduino
+  mode = key;
+  myPort.write(key);//sends the serial data to the arduino
   //catches the null 
   if(val == null){
      println("wait until null disappears");

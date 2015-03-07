@@ -6,6 +6,11 @@
  * number. These numbers can be used to position shapes in space. 
  */
 
+import processing.serial.*;
+
+Serial myPort;  // Create object from Serial class
+String val; 
+
 int rectWidth;
    
 void setup() {
@@ -31,6 +36,7 @@ void keyPressed() {
     background(0);
   } else { 
     // It's a letter key, fill a rectangle
+    println(key);  
     fill(millis() % 255);
     float x = map(keyIndex, 0, 25, 0, width - rectWidth);
     rect(x, 0, rectWidth, height);

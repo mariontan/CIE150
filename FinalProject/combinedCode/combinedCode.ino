@@ -41,26 +41,35 @@ int relayPin = 13;
 //for checkSwitch function
 int switchTimerPin = 6;
 int switchMoisturePin = 7;
+int switchChangeTimePin = 8;
 char mode;   // for incoming serial data and switch value
+char holder;
+int tflag = 1;
 
 const int nTimes = 2; //number of times to water the plant in a day
 int waterTime[nTimes][3] = {{17,23,0},{17,24,0}}; //time to water; format: {h,m,s}
 
 
 void checkSerial(){
+  //Serial.begin(9600);
   if(Serial.available()>0){
     mode = Serial.read();
+    //Serial.end();
   }
   else{
     mode = 't';
   }
 }
 void checkSwitch(){
-  if(digitalRead(switchTimerPin) == HIGH && digitalRead(switchMoisturePin) == LOW){
+  if(digitalRead(switchTimerPin) == HIGH){
     mode = 't';
   }
-  else if(digitalRead(switchTimerPin) == LOW && digitalRead(switchMoisturePin) == HIGH){
+  else if(digitalRead(switchMoisturePin) == HIGH){
+    tflag = 1;
     mode = 'm';
+  }
+  else if(digitalRead(switchChangeTimePin) == HIGH){
+    mode = 'c';
   }
   else{
     Serial.println("Toggle switch correctly");
@@ -132,11 +141,13 @@ void setup(){
   pinMode(relayPin,OUTPUT);
   pinMode(switchTimerPin,INPUT);
   pinMode(switchMoisturePin,INPUT);
+  pinMode(switchChangeTimePin,INPUT);
   pinMode(13,OUTPUT);
   
   digitalWrite(relayPin,LOW);
   digitalWrite(switchTimerPin,LOW);
   digitalWrite(switchMoisturePin,LOW);
+  digitalWrite(switchChangeTimePin,LOW);
   digitalWrite(13,LOW);
 }
  
@@ -148,54 +159,64 @@ void loop(){
   displayTempAndHum();
   //checkSerial();
   checkSwitch();
-  if(mode == 't'){
+  //Serial.begin(9600);
+  /*if(Serial.available()){
+    mode = Serial.read();
+    //Serial.end();
+    holder = mode;
+  }
+  else{
+    mode = holder;
+  }*/
+  
+  if(mode == 't' ){
+    tflag = 1;
     Serial.println("Timer Selected");
     timerCtrl();
     digitalWrite(13,HIGH);
     delay(1000);
     digitalWrite(13,LOW);
     Serial.println("Watering times");
-         Serial.println(waterTime[0][0]);
-         Serial.println(waterTime[0][1]);
-         Serial.println(waterTime[1][0]);
-         Serial.println(waterTime[1][1]);
+         Serial.println("Water Time 1: "+String(waterTime[0][0])+":"+String(waterTime[0][1]));
+         Serial.println("Water Time 2: "+String(waterTime[1][0])+":"+String(waterTime[1][1]));
     Serial.println("-------------------------------");
     Serial.print("\t");
    }
   
-  else if(mode == 'c'){
+  else if(mode == 'c' && tflag){
+         tflag = 0;
     Serial.println("Modify values");
-    Serial.print(waterTime[0][0]);
-     while(mode =='c')
-     {
-         Serial.println("Please Input");
+   
+   
+         Serial.println("Please input first hour");
          delay(5000);
          waterTime[0][0]=Serial.parseInt();
          delay(2000);
-         Serial.println("Please Input");
+         Serial.println("Please first minute");
          delay(5000);
          waterTime[0][1]=Serial.parseInt();
          delay(2000);
-         Serial.println("Please Input");
+         Serial.println("Please second hour");
          delay(5000);
          waterTime[1][0]=Serial.parseInt();
          delay(2000);
-         Serial.println("Please Input");
+         Serial.println("Please second minute");
          delay(5000);
          waterTime[1][1]=Serial.parseInt();
          delay(2000);
-         Serial.println(waterTime[0][0]);
-         Serial.println(waterTime[0][1]);
-         Serial.println(waterTime[1][0]);
-         Serial.println(waterTime[1][1]);
-         mode = 't';
+
+         Serial.println("Water Time 1: "+String(waterTime[0][0])+":"+String(waterTime[0][1]));
+         Serial.println("Water Time 2: "+String(waterTime[1][0])+":"+String(waterTime[1][1]));
          
-     }
+         Serial.println("Switch to other mode now");
+         delay(5000);
+    
    }
   
   else if(mode == 'm'){
+    tflag = 1;
     Serial.println("Moisture Selected");
-    moistCtrl();
+    //moistCtrl();
     Serial.println("-------------------------------");
   }
    
